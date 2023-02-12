@@ -12,8 +12,13 @@ describe('configureStore', () => {
     );
   });
 
-  it('should return an empty store', () => {
-    const store = configureAppStore();
-    expect(store.getState()).toBeUndefined();
+  it('should return an auth reducer', () => {
+    const store: any = configureAppStore();
+    expect(store.getState().auth).toEqual(
+      expect.objectContaining({
+        user: null,
+        token: null,
+      }),
+    );
   });
 });

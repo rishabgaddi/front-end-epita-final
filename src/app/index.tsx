@@ -15,6 +15,8 @@ import { GlobalStyle } from 'styles/global-styles';
 import { HomePage } from './pages/HomePage/Loadable';
 import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
+import { LoginPage } from './pages/LoginPage/Loadable';
+import Navbar from './components/Navbar';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -29,7 +31,22 @@ export function App() {
       </Helmet>
 
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route
+          path="/"
+          element={
+            <Navbar isPrivate>
+              <HomePage />
+            </Navbar>
+          }
+        />
+        <Route
+          path="/login"
+          element={
+            <Navbar>
+              <LoginPage />
+            </Navbar>
+          }
+        />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <GlobalStyle />

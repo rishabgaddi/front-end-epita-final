@@ -1,3 +1,6 @@
 {
-  "title": "welcome"
+  "title": "welcome",
+  "enter_email": "Enter your email address",
+  "enter_password": "Enter your password",
+  "enter_username": "Enter your username"
 }

@@ -5,10 +5,12 @@ export const GlobalStyle = createGlobalStyle`
   body {
     height: 100%;
     width: 100%;
+    background-color: black;
   }
 
   body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: white;
   }
 
   #root {
@@ -20,6 +22,7 @@ export const GlobalStyle = createGlobalStyle`
   label {
     font-family: Georgia, Times, 'Times New Roman', serif;
     line-height: 1.5em;
+    color: white;
   }
 
   input, select {

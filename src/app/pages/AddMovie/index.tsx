@@ -54,7 +54,8 @@ export function AddMovie() {
         posterReader.readAsArrayBuffer(files.poster);
         posterReader.onloadend = async () => {
           const arrayBuffer = posterReader.result as ArrayBuffer;
-          const buffer = new Uint8Array(arrayBuffer);
+          const blob = new Blob([arrayBuffer], { type: files.poster.type });
+          const buffer = await blob.arrayBuffer();
           await uploadPoster(data.movie._id, files.poster, buffer);
         };
 
@@ -62,7 +63,8 @@ export function AddMovie() {
         trailerReader.readAsArrayBuffer(files.trailer);
         trailerReader.onloadend = async () => {
           const arrayBuffer = trailerReader.result as ArrayBuffer;
-          const buffer = new Uint8Array(arrayBuffer);
+          const blob = new Blob([arrayBuffer], { type: files.trailer.type });
+          const buffer = await blob.arrayBuffer();
           await uploadTrailer(data.movie._id, files.trailer, buffer);
         };
       }

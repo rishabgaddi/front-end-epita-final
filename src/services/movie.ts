@@ -1,5 +1,14 @@
 import { expressInstance } from './axios';
 
+export const fetchMovie = async (id: string): Promise<any> => {
+  try {
+    const response = await expressInstance.get('/movies/id/' + id);
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
 export const uploadMovie = async (body: any): Promise<any> => {
   try {
     const response = await expressInstance.post('/movies', body);
@@ -16,7 +25,7 @@ export const uploadPoster = async (
 ): Promise<any> => {
   try {
     const response = await expressInstance.post(
-      '/movies/' + id + '/poster',
+      '/movies/id/' + id + '/poster',
       body,
       {
         headers: {
@@ -38,7 +47,7 @@ export const uploadTrailer = async (
 ): Promise<any> => {
   try {
     const response = await expressInstance.post(
-      '/movies/' + id + '/trailer',
+      '/movies/id/' + id + '/trailer',
       body,
       {
         headers: {
@@ -47,6 +56,15 @@ export const uploadTrailer = async (
         },
       },
     );
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const fetchLatestMovies = async (): Promise<any> => {
+  try {
+    const response = await expressInstance.get('/movies/latest');
     return response.data;
   } catch (error) {
     return Promise.reject(error);

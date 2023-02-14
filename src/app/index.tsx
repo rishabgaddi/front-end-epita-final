@@ -18,6 +18,7 @@ import { useTranslation } from 'react-i18next';
 import { LoginPage } from './pages/LoginPage/Loadable';
 import Navbar from './components/Navbar';
 import { AddMovie } from './pages/AddMovie/Loadable';
+import { MoviePage } from './pages/MoviePage/Loadable';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -53,6 +54,14 @@ export function App() {
           element={
             <Navbar isPrivate>
               <AddMovie />
+            </Navbar>
+          }
+        />
+        <Route
+          path="/movie/:id"
+          element={
+            <Navbar isPrivate>
+              <MoviePage />
             </Navbar>
           }
         />

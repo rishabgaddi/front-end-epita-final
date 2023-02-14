@@ -10,7 +10,7 @@ import { Token } from 'types/Token';
 import { getTokens } from 'services/auth';
 import { User } from 'types/User';
 import { getUser } from 'services/user';
-import { generateFormEncodedBody } from 'utils/utils';
+import { generateFormEncodedBody, setLocalStorage } from 'utils/utils';
 
 export function LoginPage() {
   const dispatch = useDispatch();
@@ -43,10 +43,10 @@ export function LoginPage() {
       };
       const formBodyEncoded = generateFormEncodedBody(details);
       const token: Token = await getTokens(formBodyEncoded);
-      const user: User = await getUser('admin2@epita.fr', token.access_token);
+      const user: User = await getUser(username, token.access_token);
       dispatch(setCredentials({ user, token }));
-      localStorage.setItem('token', token.access_token);
-      localStorage.setItem('refresh_token', token.refresh_token);
+      setLocalStorage('token', token.access_token);
+      setLocalStorage('refresh_token', token.refresh_token);
       navigate('/');
     } catch (error) {
       console.log(error);
@@ -56,7 +56,7 @@ export function LoginPage() {
   return (
     <>
       <Helmet>
-        <title>LoginPage</title>
+        <title>Login</title>
         <meta name="description" content="Login Page" />
       </Helmet>
       <Wrapper>

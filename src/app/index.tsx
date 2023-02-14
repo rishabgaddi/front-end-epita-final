@@ -17,17 +17,18 @@ import { NotFoundPage } from './components/NotFoundPage/Loadable';
 import { useTranslation } from 'react-i18next';
 import { LoginPage } from './pages/LoginPage/Loadable';
 import Navbar from './components/Navbar';
+import { AddMovie } from './pages/AddMovie/Loadable';
 
 export function App() {
   const { i18n } = useTranslation();
   return (
     <BrowserRouter>
       <Helmet
-        titleTemplate="%s - React Boilerplate"
-        defaultTitle="React Boilerplate"
+        titleTemplate="%s"
+        defaultTitle="A Movie App"
         htmlAttributes={{ lang: i18n.language }}
       >
-        <meta name="description" content="A React Boilerplate application" />
+        <meta name="description" content="A Movie application" />
       </Helmet>
 
       <Routes>
@@ -44,6 +45,14 @@ export function App() {
           element={
             <Navbar>
               <LoginPage />
+            </Navbar>
+          }
+        />
+        <Route
+          path="/add-movie"
+          element={
+            <Navbar isPrivate>
+              <AddMovie />
             </Navbar>
           }
         />

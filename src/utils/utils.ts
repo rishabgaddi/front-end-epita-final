@@ -21,3 +21,26 @@ export const isValidToken = (token: string): boolean => {
     return false;
   }
 };
+
+export const decodeUsername = (token: string): string => {
+  try {
+    const decodedToken: any = jwtDecode(token);
+    return decodedToken.preferred_username;
+  } catch (error) {
+    return '';
+  }
+};
+
+export const setLocalStorage = (key: string, value: any): void => {
+  localStorage.setItem(key, value);
+};
+
+export const getLocalStorage = (key: string): any => {
+  return localStorage.getItem(key);
+};
+
+export const clearTokens = (tokens: string[]): void => {
+  tokens.forEach(token => {
+    localStorage.removeItem(token);
+  });
+};

@@ -1,6 +1,14 @@
 {
-  "title": "welcome",
+  "access_denied": "Access denied",
   "enter_email": "Enter your email address",
   "enter_password": "Enter your password",
-  "enter_username": "Enter your username"
+  "enter_username": "Enter your username",
+  "enter_movie_title": "Enter movie title",
+  "enter_release_date": "Enter release date",
+  "enter_category": "Enter category",
+  "enter_director_name": "Enter director name",
+  "not_authorised": "You are not authorised to access this page",
+  "select_movie_poster": "Select movie poster",
+  "select_movie_trailer": "Select movie trailer",
+  "title": "welcome"
 }

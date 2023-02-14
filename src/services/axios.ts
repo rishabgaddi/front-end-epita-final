@@ -2,7 +2,12 @@ import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setToken } from 'slices/authSlice';
 import { Token } from 'types/Token';
-import { generateFormEncodedBody, isValidToken } from 'utils/utils';
+import {
+  generateFormEncodedBody,
+  getLocalStorage,
+  isValidToken,
+  setLocalStorage,
+} from 'utils/utils';
 import { getTokens } from './auth';
 
 axios.interceptors.request.use(async (request: any) => {
@@ -12,7 +17,7 @@ axios.interceptors.request.use(async (request: any) => {
       request.headers.Authorization.split(' ')[1];
     if (!token || token === 'null') return request;
     if (!isValidToken(token)) {
-      const refreshToken = localStorage.getItem('refresh_token');
+      const refreshToken = getLocalStorage('refresh_token');
       if (!refreshToken) return request;
       const details = {
         grant_type: 'refresh_token',
@@ -23,8 +28,8 @@ axios.interceptors.request.use(async (request: any) => {
       if (token) {
         const accessToken = token.access_token;
         request.headers.Authorization = `Bearer ${accessToken}`;
-        localStorage.setItem('token', accessToken);
-        localStorage.setItem('refresh_token', token.refresh_token);
+        setLocalStorage('token', accessToken);
+        setLocalStorage('refresh_token', token.refresh_token);
         const dispatch = useDispatch();
         dispatch(setToken({ token: token }));
       }
@@ -46,5 +51,10 @@ export const authInstance = axios.create({
 
 export const apiInstance = axios.create({
   baseURL: process.env.REACT_APP_API_BASE_URL,
+  withCredentials: true,
+});
+
+export const expressInstance = axios.create({
+  baseURL: process.env.REACT_APP_EXPRESS_BASE_URL,
   withCredentials: true,
 });

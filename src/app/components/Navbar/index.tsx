@@ -3,62 +3,68 @@ import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { getTokens, logout } from 'services/auth';
 import { getUser } from 'services/user';
-import { deleteCredentials, setToken, setUser } from 'slices/authSlice';
+import { deleteCredentials, setCredentials } from 'slices/authSlice';
 import styled from 'styled-components';
 import { Token } from 'types/Token';
 import { User } from 'types/User';
-import { generateFormEncodedBody, isValidToken } from 'utils/utils';
+import {
+  clearTokens,
+  decodeUsername,
+  generateFormEncodedBody,
+  getLocalStorage,
+  setLocalStorage,
+} from 'utils/utils';
 
 const Navbar = ({ children, isPrivate = false }) => {
   const [isAuth, setIsAuth] = React.useState(false);
+  const [isAdmin, setIsAdmin] = React.useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
     const validateAuth = async () => {
-      let access_token = localStorage.getItem('token');
-      if (access_token) {
-        if (!isValidToken(access_token)) {
+      let refresh_token = getLocalStorage('refresh_token');
+      if (refresh_token) {
+        try {
           const details = {
             grant_type: 'refresh_token',
             client_id: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
-            refresh_token: localStorage.getItem('refresh_token'),
+            refresh_token: refresh_token,
           };
           const token: Token = await getTokens(
             generateFormEncodedBody(details),
           );
-          if (token) {
-            localStorage.setItem('token', token.access_token);
-            localStorage.setItem('refresh_token', token.refresh_token);
-            dispatch(setToken({ token }));
-            setIsAuth(true);
-            if (!isPrivate) {
-              navigate('/');
-            }
+          const username = decodeUsername(token.access_token);
+          if (!username || username === '') {
+            clearTokens(['token', 'refresh_token']);
+            navigate('/login');
+            return;
           }
+          const user: User = await getUser(username, token.access_token);
+          setLocalStorage('token', token.access_token);
+          setLocalStorage('refresh_token', token.refresh_token);
+          dispatch(setCredentials({ user, token }));
+          setIsAuth(true);
+          setIsAdmin(user.type === 'admin');
+          if (!isPrivate) {
+            navigate('/');
+          }
+          return;
+        } catch (error) {
+          console.log(error);
         }
-        const user: User = await getUser('admin2@epita.fr', access_token);
-        dispatch(setUser({ user }));
-        setIsAuth(true);
-        navigate('/');
-      } else {
-        navigate('/login');
       }
+      navigate('/login');
     };
-    try {
-      validateAuth();
-    } catch (error) {
-      console.log(error);
-    }
+    validateAuth();
   }, [isAuth, isPrivate, navigate, dispatch]);
 
   const handleLogout = async () => {
-    const refreshToken = localStorage.getItem('refresh_token');
+    const refreshToken = getLocalStorage('refresh_token');
     if (refreshToken) {
       await logout(refreshToken);
     }
-    localStorage.removeItem('token');
-    localStorage.removeItem('refresh_token');
+    clearTokens(['token', 'refresh_token']);
     dispatch(deleteCredentials());
     setIsAuth(false);
     navigate('/login');
@@ -71,7 +77,7 @@ const Navbar = ({ children, isPrivate = false }) => {
           {isAuth ? (
             <>
               <Link to="/">Home</Link>
-              {/* <Link to="/logout">Logout</Link> */}
+              {isAdmin && <Link to="/add-movie">Add Movie</Link>}
               <Button onClick={handleLogout}>Logout</Button>
             </>
           ) : (

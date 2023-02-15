@@ -1,12 +1,16 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { fetchMovie } from 'services/movie';
+import { addSeenMovie } from 'services/seenMovie';
+import { AuthState } from 'slices/authSlice';
 import styled from 'styled-components';
 import { Movie } from 'types/Movie';
 
 export function MoviePage() {
   let id = useParams().id;
+  const state: AuthState = useSelector((state: any) => state.auth);
   const [movieDetails, setMovieDetails] = React.useState<Movie>();
 
   const fetchMovieDetails = async (id: string) => {
@@ -14,11 +18,17 @@ export function MoviePage() {
     setMovieDetails(data.movie);
   };
 
-  const markAsWatched = async () => {};
+  const markAsWatched = async () => {
+    await addSeenMovie(
+      new Date().toISOString(),
+      movieDetails?._id!,
+      state.user?.username!,
+    );
+  };
 
   React.useEffect(() => {
     fetchMovieDetails(id!);
-  }, [id, movieDetails]);
+  }, [id]);
 
   return (
     <>

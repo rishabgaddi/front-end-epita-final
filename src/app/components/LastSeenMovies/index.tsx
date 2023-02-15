@@ -1,21 +1,26 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { fetchLatestMovies } from 'services/movie';
+import { useSelector } from 'react-redux';
+import { AuthState } from 'slices/authSlice';
 import styled from 'styled-components';
 import { Movie } from 'types/Movie';
 import { MovieCard } from '../MovieCard/Loadable';
+import { fetchSeenMovies } from 'services/movie';
 
-export function LatestMovies() {
+export const LastSeenMovies = () => {
+  const state: AuthState = useSelector((state: any) => state.auth);
   const [movies, setMovies] = React.useState<Movie[]>([]);
   const { t } = useTranslation();
 
   React.useEffect(() => {
     const fetchMovies = async () => {
-      const data = await fetchLatestMovies();
+      const data = await fetchSeenMovies(state.user?.username!);
       setMovies(data.movies);
     };
-    fetchMovies();
-  }, []);
+    if (state.user) {
+      fetchMovies();
+    }
+  }, [state.user]);
 
   return (
     <>
@@ -30,7 +35,7 @@ export function LatestMovies() {
       </Wrapper>
     </>
   );
-}
+};
 
 const Wrapper = styled.div`
   display: flex;

@@ -1,3 +1,4 @@
+import { LastSeenMovies } from 'app/components/LastSeenMovies/Loadable';
 import { LatestMovies } from 'app/components/LatestMovies/Loadable';
 import * as React from 'react';
 import { Helmet } from 'react-helmet-async';
@@ -24,8 +25,11 @@ export function HomePage() {
       <Wrapper>
         <H1>Welcome {name}</H1>
 
-        <H3>Latest Movies</H3>
+        <H3>Latest</H3>
         <LatestMovies />
+
+        <H3>Last seen</H3>
+        <LastSeenMovies />
       </Wrapper>
     </>
   );

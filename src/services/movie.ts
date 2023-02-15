@@ -70,3 +70,12 @@ export const fetchLatestMovies = async (): Promise<any> => {
     return Promise.reject(error);
   }
 };
+
+export const fetchSeenMovies = async (username: string): Promise<any> => {
+  try {
+    const response = await expressInstance.get('/movies/seen/user/' + username);
+    return response.data;
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};

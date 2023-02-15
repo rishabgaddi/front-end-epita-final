@@ -1,14 +1,11 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { AuthState } from 'slices/authSlice';
+import { getTopMovies } from 'services/rating';
 import styled from 'styled-components';
 import { Movie } from 'types/Movie';
-import { MovieCard } from '../MovieCard/Loadable';
-import { fetchSeenMovies } from 'services/movie';
+import { MovieCard } from '../MovieCard';
 
-export const LastSeenMovies = () => {
-  const state: AuthState = useSelector((state: any) => state.auth);
+export function TopPopularMovies() {
   const [movies, setMovies] = React.useState<Movie[]>([]);
   const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const { t } = useTranslation();
@@ -16,7 +13,7 @@ export const LastSeenMovies = () => {
   React.useEffect(() => {
     const fetchMovies = async () => {
       try {
-        const data = await fetchSeenMovies(state.user?.username!);
+        const data = await getTopMovies();
         setMovies(data.movies);
       } catch (error) {
         console.log(error);
@@ -24,10 +21,8 @@ export const LastSeenMovies = () => {
         setIsLoading(false);
       }
     };
-    if (state.user) {
-      fetchMovies();
-    }
-  }, [state.user]);
+    fetchMovies();
+  }, []);
 
   return isLoading ? (
     <>
@@ -38,7 +33,7 @@ export const LastSeenMovies = () => {
       <Wrapper>
         {movies && movies.length > 0 ? (
           movies.map((movie: Movie) => (
-            <MovieCard key={`seenmovie-${movie._id}`} movie={movie} />
+            <MovieCard key={`topmovie-${movie._id}`} movie={movie} />
           ))
         ) : (
           <Text>{t('no_movies')}</Text>
@@ -46,7 +41,7 @@ export const LastSeenMovies = () => {
       </Wrapper>
     </>
   );
-};
+}
 
 const Wrapper = styled.div`
   display: flex;

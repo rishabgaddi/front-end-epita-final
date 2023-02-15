@@ -19,6 +19,8 @@ import { LoginPage } from './pages/LoginPage/Loadable';
 import Navbar from './components/Navbar';
 import { AddMovie } from './pages/AddMovie/Loadable';
 import { MoviePage } from './pages/MoviePage/Loadable';
+import { RatingPage } from './pages/RatingPage/Loadable';
+import { StatsPage } from './pages/StatsPage/Loadable';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -62,6 +64,22 @@ export function App() {
           element={
             <Navbar isPrivate>
               <MoviePage />
+            </Navbar>
+          }
+        />
+        <Route
+          path="/rate/movie/:id"
+          element={
+            <Navbar isPrivate>
+              <RatingPage />
+            </Navbar>
+          }
+        />
+        <Route
+          path="/stats"
+          element={
+            <Navbar isPrivate>
+              <StatsPage />
             </Navbar>
           }
         />

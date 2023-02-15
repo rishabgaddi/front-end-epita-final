@@ -7,6 +7,8 @@
   "enter_release_date": "Enter release date",
   "enter_category": "Enter category",
   "enter_director_name": "Enter director name",
+  "enter_title": "Enter title",
+  "enter_description": "Enter description",
   "no_movies": "No movies found",
   "not_authorised": "You are not authorised to access this page",
   "select_movie_poster": "Select movie poster",

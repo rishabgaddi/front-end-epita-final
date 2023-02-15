@@ -7,22 +7,33 @@ import { MovieCard } from '../MovieCard/Loadable';
 
 export function LatestMovies() {
   const [movies, setMovies] = React.useState<Movie[]>([]);
+  const [isLoading, setIsLoading] = React.useState<boolean>(true);
   const { t } = useTranslation();
 
   React.useEffect(() => {
     const fetchMovies = async () => {
-      const data = await fetchLatestMovies();
-      setMovies(data.movies);
+      try {
+        const data = await fetchLatestMovies();
+        setMovies(data.movies);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchMovies();
   }, []);
 
-  return (
+  return isLoading ? (
+    <>
+      <Wrapper>Loading...</Wrapper>
+    </>
+  ) : (
     <>
       <Wrapper>
         {movies && movies.length > 0 ? (
           movies.map((movie: Movie) => (
-            <MovieCard key={`movie-${movie._id}`} movie={movie} />
+            <MovieCard key={`latestmovie-${movie._id}`} movie={movie} />
           ))
         ) : (
           <Text>{t('no_movies')}</Text>

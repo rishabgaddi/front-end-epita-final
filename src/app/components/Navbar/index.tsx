@@ -77,6 +77,7 @@ const Navbar = ({ children, isPrivate = false }) => {
           {isAuth ? (
             <>
               <Link to="/">Home</Link>
+              <Link to="/stats">Top Stats</Link>
               {isAdmin && <Link to="/add-movie">Add Movie</Link>}
               <Button onClick={handleLogout}>Logout</Button>
             </>

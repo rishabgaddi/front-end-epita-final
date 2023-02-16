@@ -21,6 +21,7 @@ import { AddMovie } from './pages/AddMovie/Loadable';
 import { MoviePage } from './pages/MoviePage/Loadable';
 import { RatingPage } from './pages/RatingPage/Loadable';
 import { StatsPage } from './pages/StatsPage/Loadable';
+import { CreateUser } from './pages/CreateUser/Loadable';
 
 export function App() {
   const { i18n } = useTranslation();
@@ -80,6 +81,14 @@ export function App() {
           element={
             <Navbar isPrivate>
               <StatsPage />
+            </Navbar>
+          }
+        />
+        <Route
+          path="/create-account"
+          element={
+            <Navbar isPrivate>
+              <CreateUser />
             </Navbar>
           }
         />

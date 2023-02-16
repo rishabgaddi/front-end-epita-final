@@ -34,29 +34,6 @@ export function RatingPage() {
     setContent(e.target.value);
   };
 
-  const fetchDetails = async (id: string) => {
-    try {
-      const data = await fetchMovie(id);
-      setMovieDetails(data.movie);
-
-      const userRating = await fetchRatingByMovieIdAndUsername(
-        data.movie._id,
-        user.username,
-      );
-      if (userRating.rating) {
-        setAlreadyRated(true);
-        setRatingId(userRating.rating._id);
-        setTitle(userRating.rating.commentTitle);
-        setContent(userRating.rating.commentContent);
-        setRating(userRating.rating.rating);
-      }
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoaded(true);
-    }
-  };
-
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!alreadyRated) {
@@ -81,6 +58,28 @@ export function RatingPage() {
   };
 
   React.useEffect(() => {
+    const fetchDetails = async (id: string) => {
+      try {
+        const data = await fetchMovie(id);
+        setMovieDetails(data.movie);
+
+        const userRating = await fetchRatingByMovieIdAndUsername(
+          data.movie._id,
+          user.username,
+        );
+        if (userRating.rating) {
+          setAlreadyRated(true);
+          setRatingId(userRating.rating._id);
+          setTitle(userRating.rating.commentTitle);
+          setContent(userRating.rating.commentContent);
+          setRating(userRating.rating.rating);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoaded(true);
+      }
+    };
     if (user) {
       fetchDetails(movieId!);
     }

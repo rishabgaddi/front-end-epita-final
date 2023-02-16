@@ -65,6 +65,7 @@ const Navbar = ({ children, isPrivate = false }) => {
               <Link to="/">Home</Link>
               <Link to="/stats">Top Stats</Link>
               {isAdmin && <Link to="/add-movie">Add Movie</Link>}
+              {isAdmin && <Link to="/create-account">Create User</Link>}
               <Button onClick={handleLogout}>Logout</Button>
             </>
           ) : (

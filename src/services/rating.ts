@@ -1,4 +1,6 @@
-import { expressInstance } from './axios';
+import { createExpressInstance } from './axios';
+
+const expressInstance = createExpressInstance();
 
 export const fetchRatingByMovieIdAndUsername = async (
   movieId: string,

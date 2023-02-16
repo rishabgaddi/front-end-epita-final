@@ -1,4 +1,7 @@
-import { expressInstance } from './axios';
+import { createApiGatewayInstance, createExpressInstance } from './axios';
+
+const expressInstance = createExpressInstance();
+const apiGatewayInstance = createApiGatewayInstance();
 
 export const fetchMovie = async (id: string): Promise<any> => {
   try {
@@ -65,6 +68,9 @@ export const uploadTrailer = async (
 export const fetchLatestMovies = async (): Promise<any> => {
   try {
     const response = await expressInstance.get('/movies/latest');
+    // const response = await apiGatewayInstance.get(
+    //   '/latestmovie/' + process.env.REACT_APP_GATEWAY_API_VERSION,
+    // );
     return response.data;
   } catch (error) {
     return Promise.reject(error);

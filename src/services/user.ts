@@ -1,15 +1,10 @@
-import { apiInstance } from './axios';
+import { createApiInstance } from './axios';
 
-export const getUser = async (
-  username: string,
-  token: string,
-): Promise<any> => {
+const apiInstance = createApiInstance();
+
+export const getUser = async (username: string): Promise<any> => {
   try {
-    const response = await apiInstance.get(`/users/info?username=${username}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await apiInstance.get(`/users/info?username=${username}`);
     return response.data;
   } catch (error) {
     return Promise.reject(error);

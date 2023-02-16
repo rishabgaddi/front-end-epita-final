@@ -19,23 +19,6 @@ export function MoviePage() {
   const [isLoaded, setIsLoaded] = React.useState(false);
   const navigate = useNavigate();
 
-  const fetchDetails = async (id: string) => {
-    try {
-      const data = await fetchMovie(id);
-      setMovieDetails(data.movie);
-
-      const userRating = await fetchRatingByMovieIdAndUsername(
-        data.movie._id,
-        state.user?.username!,
-      );
-      setRating(userRating.rating);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoaded(true);
-    }
-  };
-
   const markAsWatched = async () => {
     await addSeenMovie(
       new Date().toISOString(),
@@ -49,6 +32,22 @@ export function MoviePage() {
   };
 
   React.useEffect(() => {
+    const fetchDetails = async (id: string) => {
+      try {
+        const data = await fetchMovie(id);
+        setMovieDetails(data.movie);
+
+        const userRating = await fetchRatingByMovieIdAndUsername(
+          data.movie._id,
+          state.user?.username!,
+        );
+        setRating(userRating.rating);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setIsLoaded(true);
+      }
+    };
     if (state.user && id) {
       fetchDetails(id!);
     }

@@ -1,4 +1,6 @@
-import { apiInstance } from './axios';
+import { createApiInstance } from './axios';
+
+const apiInstance = createApiInstance();
 
 export const addSeenMovie = async (
   date: string,

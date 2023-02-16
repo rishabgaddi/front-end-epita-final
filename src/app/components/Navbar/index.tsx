@@ -1,19 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useDispatch } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
-import { getTokens, logout } from 'services/auth';
+import { logout } from 'services/auth';
 import { getUser } from 'services/user';
-import { deleteCredentials, setCredentials } from 'slices/authSlice';
+import { deleteCredentials, setUser } from 'slices/authSlice';
 import styled from 'styled-components';
-import { Token } from 'types/Token';
 import { User } from 'types/User';
-import {
-  clearTokens,
-  decodeUsername,
-  generateFormEncodedBody,
-  getLocalStorage,
-  setLocalStorage,
-} from 'utils/utils';
+import { clearTokens, decodeUsername, getLocalStorage } from 'utils/utils';
 
 const Navbar = ({ children, isPrivate = false }) => {
   const [isAuth, setIsAuth] = React.useState(false);
@@ -21,53 +14,46 @@ const Navbar = ({ children, isPrivate = false }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const validateAuth = async () => {
-      let refresh_token = getLocalStorage('refresh_token');
-      if (refresh_token) {
-        try {
-          const details = {
-            grant_type: 'refresh_token',
-            client_id: process.env.REACT_APP_KEYCLOAK_CLIENT_ID,
-            refresh_token: refresh_token,
-          };
-          const token: Token = await getTokens(
-            generateFormEncodedBody(details),
-          );
-          const username = decodeUsername(token.access_token);
-          if (!username || username === '') {
-            clearTokens(['token', 'refresh_token']);
-            navigate('/login');
-            return;
-          }
-          const user: User = await getUser(username, token.access_token);
-          setLocalStorage('token', token.access_token);
-          setLocalStorage('refresh_token', token.refresh_token);
-          dispatch(setCredentials({ user, token }));
-          setIsAuth(true);
-          setIsAdmin(user.type === 'admin');
-          if (!isPrivate) {
-            navigate('/');
-          }
-          return;
-        } catch (error) {
-          console.log(error);
+  const getUserMemoized = React.useMemo(() => getUser, []);
+
+  const validateAuth = React.useCallback(async () => {
+    let token = getLocalStorage('token');
+    if (token) {
+      try {
+        const username = decodeUsername(token);
+        const user: User = await getUserMemoized(username);
+        dispatch(setUser({ user }));
+        setIsAuth(true);
+        setIsAdmin(user.type === 'admin');
+        if (!isPrivate) {
+          navigate('/');
         }
+        return;
+      } catch (error) {
+        console.log(error);
       }
-      navigate('/login');
-    };
+    }
+    navigate('/login');
+  }, [navigate, dispatch, isPrivate, getUserMemoized]);
+
+  React.useEffect(() => {
     validateAuth();
-  }, [isAuth, isPrivate, navigate, dispatch]);
+  }, [validateAuth]);
 
   const handleLogout = async () => {
-    const refreshToken = getLocalStorage('refresh_token');
-    if (refreshToken) {
-      await logout(refreshToken);
+    try {
+      const refreshToken = getLocalStorage('refresh_token');
+      if (refreshToken) {
+        await logout(refreshToken);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      clearTokens(['token', 'refresh_token']);
+      dispatch(deleteCredentials());
+      setIsAuth(false);
+      navigate('/login');
     }
-    clearTokens(['token', 'refresh_token']);
-    dispatch(deleteCredentials());
-    setIsAuth(false);
-    navigate('/login');
   };
 
   return (

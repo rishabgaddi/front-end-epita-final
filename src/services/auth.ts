@@ -1,5 +1,7 @@
 import { generateFormEncodedBody } from 'utils/utils';
-import { authInstance } from './axios';
+import { createAuthInstance } from './axios';
+
+const authInstance = createAuthInstance();
 
 export const getTokens = async (body: any): Promise<any> => {
   try {

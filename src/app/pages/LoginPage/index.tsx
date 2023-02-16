@@ -43,10 +43,10 @@ export function LoginPage() {
       };
       const formBodyEncoded = generateFormEncodedBody(details);
       const token: Token = await getTokens(formBodyEncoded);
-      const user: User = await getUser(username, token.access_token);
-      dispatch(setCredentials({ user, token }));
       setLocalStorage('token', token.access_token);
       setLocalStorage('refresh_token', token.refresh_token);
+      const user: User = await getUser(username);
+      dispatch(setCredentials({ user, token }));
       navigate('/');
     } catch (error) {
       console.log(error);
